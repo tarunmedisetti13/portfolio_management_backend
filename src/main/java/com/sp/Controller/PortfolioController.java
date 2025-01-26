@@ -31,6 +31,15 @@ public class PortfolioController {
         Portfolio portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok(portfolio);
     }
+      @GetMapping("/{portfolioId}/username")
+    public ResponseEntity<String> getUsernameByPortfolioId(@PathVariable Long portfolioId) {
+        String username = portfolioService.getUsernameByPortfolioId(portfolioId);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found for the given portfolio ID");
+        }
+        return ResponseEntity.ok(username);
+    }
+
 
     @GetMapping("/{username}")
     public ResponseEntity<List<Portfolio>> getPortfolioByUsername(@PathVariable String username) {
