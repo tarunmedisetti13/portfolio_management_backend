@@ -31,6 +31,9 @@ public class PortfolioService {
     @Autowired
     private StockRepository stockRepository;
 
+    @Autowired
+    private StockPriceService stockPriceService;
+
     public List<Portfolio> getAllPortfolios() {
         return portfolioRepository.findAll();
     }
@@ -85,6 +88,28 @@ public class PortfolioService {
 
         // Return the combined response
         return new PortfolioWithStocksResponse(portfolio, stocks);
+    }
+ public BigDecimal getPortfolioTotalValueById(Long portfolioId) {
+        Portfolio portfolio = getPortfolioById(portfolioId); // Fetch the portfolio
+        List<Stock> stocks = portfolio.getStocks(); // Assuming you have a method to get stocks from the portfolio
+
+        BigDecimal totalValue = BigDecimal.ZERO;
+
+        // Calculate the total value of the portfolio by fetching current prices
+        for (Stock stock : stocks) {
+            String symbol = stock.getTickerSymbol();
+            String priceString = stockPriceService.getCurrentPrice(symbol); // Fetch the current price as a string
+
+            try {
+                BigDecimal currentPrice = new BigDecimal(priceString); // Convert the price string to BigDecimal
+                totalValue = totalValue.add(currentPrice.multiply(BigDecimal.valueOf(stock.getUnits()))); // Add stock value to total
+            } catch (NumberFormatException e) {
+                // Handle invalid price format (e.g., if priceString is not a valid number)
+                System.out.println("Error converting price for stock: " + symbol + " with price: " + priceString);
+            }
+        }
+
+        return totalValue; // Return the total value of the portfolio
     }
 
 
