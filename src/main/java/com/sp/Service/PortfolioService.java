@@ -40,7 +40,11 @@ public class PortfolioService {
         return portfolios; // Return either empty list or portfolios as needed
     }
 
-
+ public String getUsernameByPortfolioId(Long portfolioId) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new RuntimeException("Portfolio not found with ID: " + portfolioId));
+        return portfolio.getUser().getUsername(); // Assuming the `User` entity has a `getUsername` method
+    }
     public Portfolio createPortfolio(Portfolio portfolio, String username) {
         // Fetch the User entity using the username
         User user = userRepository.findByUsername(username);
