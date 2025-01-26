@@ -39,7 +39,11 @@ public class PortfolioController {
         }
         return ResponseEntity.ok(username);
     }
-
+@GetMapping("/{portfolioId}/total")
+    public ResponseEntity<BigDecimal> getPortfolioTotalValue(@PathVariable Long portfolioId) {
+        BigDecimal totalValue = portfolioService.getPortfolioTotalValueById(portfolioId);
+        return ResponseEntity.ok(totalValue); // Return the total value as the response
+    }
 
     @GetMapping("/{username}")
     public ResponseEntity<List<Portfolio>> getPortfolioByUsername(@PathVariable String username) {
